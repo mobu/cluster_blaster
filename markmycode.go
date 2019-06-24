@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"bufio"
+	//"strings"
+	"regexp"
 )
 
 func check(e error) {
@@ -32,10 +34,13 @@ func main() {
 	defer data.Close()
 
 	scanner := bufio.NewScanner(data)
-	buf := make([]byte, 0, 1024*1024)
-	scanner.Buffer(buf, 10*1024*1024)
+	// buf := make([]byte, 0, 1024*1024)
+	// scanner.Buffer(buf, 10*1024*1024)
 
+	re := regexp.MustCompile("^(\\/\\/*)")
 	for scanner.Scan(){
-		print(scanner.Text())
+		if !re.MatchString(scanner.Text()){
+			fmt.Println(scanner.Text())
+		}
 	}
 }
