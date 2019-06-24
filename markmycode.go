@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"bufio"
 )
 
 func check(e error) {
@@ -15,8 +15,8 @@ func check(e error) {
 
 func main() {
 	fileName := flag.String("file", "", "File to be parsed (required)")
-	progLang := flag.String("lang", "", "Programming language of the source file (required)")
-	style := flag.String("css", "", "stylesheet (optional)")
+	// progLang := flag.String("lang", "", "Programming language of the source file (required)")
+	// style := flag.String("css", "", "stylesheet (optional)")
 
 	if len(os.Args) < 3 {
 		fmt.Println("Number of arguments is invalid. Usage is -file <filename> -lang <language>")
@@ -27,8 +27,15 @@ func main() {
 		fmt.Println("A valid file name is required.")
 		os.Exit(1)
 	}
-	data, err := ioutil.ReadFile(*fileName)
+	data,err := os.Open(*fileName)
 	check(err)
-	fmt.Println(progLang,style)
-	fmt.Print(string(data))
+	defer data.Close()
+
+	scanner := bufio.NewScanner(data)
+	buf := make([]byte, 0, 1024*1024)
+	scanner.Buffer(buf, 10*1024*1024)
+
+	for scanner.Scan(){
+		print(scanner.Text())
+	}
 }
