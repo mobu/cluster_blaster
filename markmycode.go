@@ -46,11 +46,12 @@ func main() {
 	// buf := make([]byte, 0, 1024*1024)
 	// scanner.Buffer(buf, 10*1024*1024)
 
-	re := regexp.MustCompile("^(\\/\\/*)")
+	re := regexp.MustCompile("(\\/\\/)")
 	for scanner.Scan(){
 		trimmed := strings.TrimSpace(scanner.Text())
 		if(re.Match([]byte(trimmed))){
-			fmt.Println(trimmed)
+			split := re.Split(trimmed,-1)
+			fmt.Println(split[1])
 		}
 	}
 }
