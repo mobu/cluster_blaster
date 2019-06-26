@@ -1,9 +1,4 @@
 // # MarkMyCode
-/* Multiline
-comment
-*/
-
-/* Single line */
 
 package main
 
@@ -52,11 +47,15 @@ func main() {
 	// buf := make([]byte, 0, 1024*1024)
 	// scanner.Buffer(buf, 10*1024*1024)
 
-	re := regexp.MustCompile("(\\/\\/)|(\\/\\*([^*]|[\r\n]|(\\*+([^*\\/]|[\r\n])))*\\*+\\/)|(\\/\\/.*)")
+	re := regexp.MustCompile("(\\/\\/)")
 	for scanner.Scan(){
 		if(re.Match([]byte(scanner.Text()))){
 			split := re.Split(scanner.Text(),-1)
 			fmt.Println(split[1])
 		}
 	}
+}
+
+func parse(html string)string{
+	return ""
 }
