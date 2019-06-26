@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"bufio"
+	"strings"
 )
 
 func check(e error) {
@@ -43,15 +44,22 @@ func main() {
 	defer data.Close()
 	fmt.Println(*progLang,*style)
 
+	fileInfo,err := data.Stat()
+	if err != nil{
+		fmt.Println(err)
+		return
+	}
+	fileSize := fileInfo.Size()
+	buffer := make([]byte,fileSize)
 	scanner := bufio.NewScanner(data)
+	scanner.Buffer(buffer,10*1024*1024)
 	// buf := make([]byte, 0, 1024*1024)
 	// scanner.Buffer(buf, 10*1024*1024)
 
-	re := regexp.MustCompile("(\\/\\/)")
+	re := regexp.MustCompile("(\\/\\*([^*]|[\r\n]|(\\*+([^*\\/]|[\r\n])))*\\*+\\/|\\/\\/.*\n?)")
 	for scanner.Scan(){
 		if(re.Match([]byte(scanner.Text()))){
-			split := re.Split(scanner.Text(),-1)
-			fmt.Println(split[1])
+			fmt.Println(strings.TrimSpace(scanner.Text()))
 		}
 	}
 }
