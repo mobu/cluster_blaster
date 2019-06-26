@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"bufio"
-	//"strings"
+	"strings"
 	"regexp"
 )
 
@@ -40,6 +40,7 @@ func main() {
 	data,err := os.Open(*fileName)
 	check(err)
 	defer data.Close()
+	fmt.Println(*progLang,*style)
 
 	scanner := bufio.NewScanner(data)
 	// buf := make([]byte, 0, 1024*1024)
@@ -47,8 +48,9 @@ func main() {
 
 	re := regexp.MustCompile("^(\\/\\/*)")
 	for scanner.Scan(){
-		if !re.MatchString(scanner.Text()){
-			fmt.Println(scanner.Text())
+		trimmed := strings.TrimSpace(scanner.Text())
+		if(re.Match([]byte(trimmed))){
+			fmt.Println(trimmed)
 		}
 	}
 }
