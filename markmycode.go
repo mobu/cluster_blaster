@@ -1,14 +1,12 @@
-// # MarkMyCode
-
 package main
 
 import (
 	"flag"
 	"fmt"
 	"os"
-	"regexp"
-	"bufio"
+	//"regexp"
 	"strings"
+	"bufio"
 )
 
 func check(e error) {
@@ -39,29 +37,29 @@ func main() {
 		os.Exit(1)
 	}
 
+	if _,err := os.Stat(*fileName); err != nil{
+		if os.IsNotExist(err){
+			fmt.Println("error: file does not exist")
+			os.Exit(1)
+		}
+	}
+
 	data,err := os.Open(*fileName)
 	check(err)
 	defer data.Close()
+
 	fmt.Println(*progLang,*style)
 
-	fileInfo,err := data.Stat()
-	if err != nil{
-		fmt.Println(err)
-		return
-	}
-	fileSize := fileInfo.Size()
-	buffer := make([]byte,fileSize)
 	scanner := bufio.NewScanner(data)
-	scanner.Buffer(buffer,10*1024*1024)
-	// buf := make([]byte, 0, 1024*1024)
-	// scanner.Buffer(buf, 10*1024*1024)
 
-	re := regexp.MustCompile("(\\/\\*([^*]|[\r\n]|(\\*+([^*\\/]|[\r\n])))*\\*+\\/|\\/\\/.*\n?)")
+	//re := regexp.MustCompile("(\\/\\*([^*]|[\r\n]|(\\*+([^*\\/]|[\r\n])))*\\*+\\/|\\/\\/.*\n?)")
+
 	for scanner.Scan(){
-		if(re.Match([]byte(scanner.Text()))){
-			fmt.Println(strings.TrimSpace(scanner.Text()))
-		}
+		line := strings.TrimSpace(scanner.Text())
+		fmt.Println(scanner.Text())
 	}
+
+	
 }
 
 func parse(html string)string{
