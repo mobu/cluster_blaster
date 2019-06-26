@@ -51,7 +51,7 @@ func main() {
 		trimmed := strings.TrimSpace(scanner.Text())
 		if(re.Match([]byte(trimmed))){
 			split := re.Split(trimmed,-1)
-			fmt.Println(split[1])
+			fmt.Println(split[0])
 		}
 	}
 }
