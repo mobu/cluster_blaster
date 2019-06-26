@@ -1,12 +1,18 @@
+// # MarkMyCode
+/* Multiline
+comment
+*/
+
+/* Single line */
+
 package main
 
 import (
 	"flag"
 	"fmt"
 	"os"
-	"bufio"
-	"strings"
 	"regexp"
+	"bufio"
 )
 
 func check(e error) {
@@ -46,12 +52,11 @@ func main() {
 	// buf := make([]byte, 0, 1024*1024)
 	// scanner.Buffer(buf, 10*1024*1024)
 
-	re := regexp.MustCompile("(\\/\\/)")
+	re := regexp.MustCompile("(\\/\\/)|(\\/\\*([^*]|[\r\n]|(\\*+([^*\\/]|[\r\n])))*\\*+\\/)|(\\/\\/.*)")
 	for scanner.Scan(){
-		trimmed := strings.TrimSpace(scanner.Text())
-		if(re.Match([]byte(trimmed))){
-			split := re.Split(trimmed,-1)
-			fmt.Println(split[0])
+		if(re.Match([]byte(scanner.Text()))){
+			split := re.Split(scanner.Text(),-1)
+			fmt.Println(split[1])
 		}
 	}
 }
