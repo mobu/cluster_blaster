@@ -47,11 +47,15 @@ func main() {
 	}
 	for _,f := range fileList{
 		wg.Add(1)
-		go fileOpen(f.Name(),&wg)
+		go fileOpen(f,&wg)
 	}
 
 	fmt.Printf("#goroutines: %d\n", runtime.NumGoroutine())
 }
+
+//
+// fileOpen function
+//
 
 func fileOpen(fileName string,wg *sync.WaitGroup){
 
