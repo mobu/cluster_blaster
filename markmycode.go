@@ -4,16 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	//"regexp"
-	"strings"
+	"sync"
 	"bufio"
 )
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
+var wg sync.WaitGroup
 
 func main() {
 	fileName := flag.String("file", "", "File to be parsed (required)")
@@ -37,31 +32,37 @@ func main() {
 		os.Exit(1)
 	}
 
-	if _,err := os.Stat(*fileName); err != nil{
+	if *style == ""{
+		*style = "none"
+	}
+
+	fmt.Printf("Language: %s, style: %s",*progLang,*style)
+}
+
+func fileOpen(fileName string,wg *sync.WaitGroup){
+
+	if _,err := os.Stat(fileName); err != nil{
 		if os.IsNotExist(err){
 			fmt.Println("error: file does not exist")
 			os.Exit(1)
 		}
 	}
+	file,err := os.Open(fileName)
+	if err != nil{
+		fmt.Println("Error opening file")
+		return
+	}
+	defer func(){
+		file.Close()
+		wg.Done()
+	}()
 
-	data,err := os.Open(*fileName)
-	check(err)
-	defer data.Close()
-
-	fmt.Println(*progLang,*style)
-
-	scanner := bufio.NewScanner(data)
-
-	//re := regexp.MustCompile("(\\/\\*([^*]|[\r\n]|(\\*+([^*\\/]|[\r\n])))*\\*+\\/|\\/\\/.*\n?)")
+	buf := make([]byte, 32*1024)
+	scanner := bufio.NewScanner(file)
+	scanner.Buffer(buf,32*1024)
 
 	for scanner.Scan(){
-		line := strings.TrimSpace(scanner.Text())
 		fmt.Println(scanner.Text())
 	}
 
-	
-}
-
-func parse(html string)string{
-	return ""
 }
