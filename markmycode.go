@@ -6,6 +6,9 @@ import (
 	"os"
 	"sync"
 	"bufio"
+	"io/ioutil"
+	"log"
+	"runtime"
 )
 
 var wg sync.WaitGroup
@@ -37,6 +40,17 @@ func main() {
 	}
 
 	fmt.Printf("Language: %s, style: %s",*progLang,*style)
+
+	fileList, err := ioutil.ReadDir(".")
+	if err != nil{
+		log.Fatal(err)
+	}
+	for _,f := range fileList{
+		wg.Add(1)
+		go fileOpen(f.Name(),&wg)
+	}
+
+	fmt.Printf("#goroutines: %d\n", runtime.NumGoroutine())
 }
 
 func fileOpen(fileName string,wg *sync.WaitGroup){
